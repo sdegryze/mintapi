@@ -6,7 +6,7 @@ import os
 
 def show_info():
     os.chdir(os.path.dirname(__file__))
-    mc = MintConnection(resources.mint_username, resources.mint_username)
+    mc = MintConnection(resources.mint_username, resources.mint_password)
 
     investment_account_ids = mc.get_investment_account_Ids()
 
@@ -35,7 +35,8 @@ def show_info():
 
     print "%-25s%10s%10s%10s" % ("asset", "value", "fraction", "goal")
     for idx, asset in enumerate(assets):
-        print "%-25s%10.2f%10.2f%10.2f" % (asset, value_by_asset[asset], percentage_by_asset[asset], ideal_allocation[asset])
+        print "%-25s%10.2f%10.2f%10.2f" %\
+              (asset, value_by_asset[asset], percentage_by_asset[asset], ideal_allocation[asset])
     print
 
     my_portfolio.rebalance_portfolio()
