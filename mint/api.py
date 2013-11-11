@@ -141,6 +141,7 @@ class Portfolio():
         if Portfolio.asset_allocation_model == {}:
             self.read_asset_allocation_model()
         self.holdings = []
+        self.last_updated = ""
 
     @staticmethod
     def read_asset_allocation_model():
@@ -234,7 +235,7 @@ class Portfolio():
         self.holdings = new_holdings
 
     def write_to_log(self):
-        fixed_header = ["Date", "Total Value"]
+        fixed_header = ["Date", "Last Updated", "Total Value"]
         try:
             with open('allocation_log.csv', 'rU') as logfile:
                 header = logfile.readline().strip('\n').split(",")
@@ -245,7 +246,7 @@ class Portfolio():
                 logfile.write(header_string + "\n")
         value_by_asset = self.value_by_asset()
         value_list = [value_by_asset[el] for el in header if not el in fixed_header]
-        value_list = [datetime.now(),  self.total_value()] + value_list
+        value_list = [datetime.now(),  self.last_updated, self.total_value()] + value_list
         value_string = ",".join([str(el) for el in value_list])
         with open('allocation_log.csv','a') as csvfile:
             csvfile.write(value_string + '\n')

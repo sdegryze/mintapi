@@ -15,6 +15,7 @@ def show_info():
     for investment_account_id in investment_account_ids:
         my_portfolio.add_holdings(mc.get_holdings(investment_account_id))
     my_portfolio.consolidate_holdings()
+    my_portfolio.last_updated = mc.reported_last_date
 
     print "As of %s, your portfolio's total value is $%.2f" %\
           (mc.reported_last_date, my_portfolio.total_value())
