@@ -26,3 +26,8 @@ reports/*
 staticserve
 .DS_store
 .idea
+
+allocation_log.csv
+debug_accounts.html
+debug_investment.html
+debug_login.html
