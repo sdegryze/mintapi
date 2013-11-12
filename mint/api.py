@@ -115,8 +115,11 @@ class Holding():
         if Holding.asset_allocation_library == {}:
             self.read_asset_allocation_library()
         self.description = description
-        if self.description=='CASH':
+        if self.description == 'CASH':
             self.symbol = u'CASH'
+        elif symbol == 'Cash':
+            self.symbol = u'CASH'
+            value = 0  #mint seems to have a spurious "Cash" category
         else:
             self.symbol = symbol
         self.value = value
@@ -169,7 +172,7 @@ class Portfolio():
             asset_value = sum(holding.value for holding in self.holdings if holding.allocation_class == asset_type)
             total_value += asset_value
             value_by_asset_dict[asset_type] = asset_value
-        if total_value != self.total_value():
+        if abs(total_value - self.total_value()) > 0.00001:
             raise Exception("Not all asset allocation types are represented in the asset allocation model")
         return value_by_asset_dict
 
@@ -210,12 +213,16 @@ class Portfolio():
 
         assets_touched = [k for (v,k) in sorted(assets_touched, reverse=True)]
 
+        action_msg = []
+
         for k in assets_touched:
             v = portfolio_deviation[k]
             if v < 0:
-                print "SELL %.2f$ of %s" % (abs(v * total_value), k)
+                action_msg.append("SELL %.2f$ of %s" % (abs(v * total_value), k))
             else:
-                print "BUY %.2f$ of %s" % (v * total_value, k)
+                action_msg.append("BUY %.2f$ of %s" % (v * total_value, k))
+
+        return action_msg
 
     def consolidate_holdings(self):
         all_symbols = self.get_symbols()
