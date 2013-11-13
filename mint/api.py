@@ -134,7 +134,7 @@ class Holding():
         with open('asset_allocation_library.csv', 'rU') as csvfile:
             csv_reader = csv.reader(csvfile)
             for row in csv_reader:
-                if row[0]!="":
+                if row[0] != "":
                     Holding.asset_allocation_library[row[0]] = row[1]
 
 class Portfolio():
@@ -192,7 +192,7 @@ class Portfolio():
         total_value = self.total_value()
         percentage_by_asset = {k: v/total_value for (k, v) in value_by_asset.items()}
         allocation_sum = sum(v for v in percentage_by_asset.values())
-        if allocation_sum != 1.0:
+        if abs(allocation_sum - 1.0) > 0.0000001:
             raise Exception("Asset allocation does not sum up to 1")
         return percentage_by_asset
 
@@ -201,7 +201,7 @@ class Portfolio():
         m = Portfolio.asset_allocation_model
         deviation_by_asset = {k: m[k]["fraction"] - v for (k, v) in percentage_by_asset.items()}
         allocation_sum = sum(v for v in deviation_by_asset.values())
-        if allocation_sum > 0.0001:
+        if abs(allocation_sum) > 0.0001:
             raise Exception("Deviation of asset allocation does not sum up to 0")
         return deviation_by_asset
 
@@ -255,5 +255,5 @@ class Portfolio():
         value_list = [value_by_asset[el] for el in header if not el in fixed_header]
         value_list = [datetime.now(),  self.last_updated, self.total_value()] + value_list
         value_string = ",".join([str(el) for el in value_list])
-        with open('allocation_log.csv','a') as csvfile:
+        with open('allocation_log.csv', 'a') as csvfile:
             csvfile.write(value_string + '\n')
